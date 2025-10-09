@@ -60,6 +60,15 @@ function QuizApi() {
     setAnswers({ ...answers, [currentIndex]: value });
   };
 
+  // ✅ Prevent going to next without selecting answer
+  const handleNext = () => {
+    if (!answers[currentIndex]) {
+      alert("⚠️ Please select an answer before moving to the next question!");
+      return;
+    }
+    setCurrentIndex((prev) => Math.min(prev + 1, questions.length - 1));
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "40px" }}>
       <h1>📚 Mayank Super Quizzes</h1>
@@ -190,9 +199,7 @@ function QuizApi() {
 
             {currentIndex < questions.length - 1 ? (
               <button
-                onClick={() =>
-                  setCurrentIndex((prev) => Math.min(prev + 1, questions.length - 1))
-                }
+                onClick={handleNext} // ✅ Updated function
                 style={{
                   padding: "8px 15px",
                   cursor: "pointer",
@@ -230,9 +237,7 @@ function QuizApi() {
           <p>
             You got <b>{score}</b> out of <b>{questions.length}</b> correct.
           </p>
-          <p>
-            Score: {((score / questions.length) * 100).toFixed(2)}%
-          </p>
+          <p>Score: {((score / questions.length) * 100).toFixed(2)}%</p>
           <button
             onClick={() => {
               setSelectedSubject(null);
