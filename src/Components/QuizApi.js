@@ -21,7 +21,7 @@ function QuizApi() {
       .catch(() => console.log("Error loading subjects"));
   };
 
-  // Load quizzes of selected subject
+  // Load quizzes
   const loadQuizzes = (subject) => {
     setSelectedSubject(subject.name);
     axios
@@ -30,7 +30,7 @@ function QuizApi() {
       .catch(() => console.log("Error loading quizzes"));
   };
 
-  // Load questions of selected quiz
+  // Load questions
   const loadQuestions = (quiz) => {
     setSelectedQuiz(quiz.title);
     axios
@@ -45,7 +45,6 @@ function QuizApi() {
       .catch(() => console.log("Error loading questions"));
   };
 
-  // Submit quiz and calculate score
   const handleSubmit = () => {
     let correct = 0;
     questions.forEach((q, i) => {
@@ -55,12 +54,10 @@ function QuizApi() {
     setShowResult(true);
   };
 
-  // Handle answer selection
   const handleAnswerChange = (value) => {
     setAnswers({ ...answers, [currentIndex]: value });
   };
 
-  // ✅ Prevent going to next without selecting answer
   const handleNext = () => {
     if (!answers[currentIndex]) {
       alert("⚠️ Please select an answer before moving to the next question!");
@@ -69,44 +66,84 @@ function QuizApi() {
     setCurrentIndex((prev) => Math.min(prev + 1, questions.length - 1));
   };
 
+  // 🔥 STYLING OBJECTS
+  const styles = {
+    body: {
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #667eea, #764ba2)",
+      color: "#fff",
+      textAlign: "center",
+      padding: "40px 10px",
+      fontFamily: "'Poppins', sans-serif",
+    },
+    title: {
+      fontSize: "2.5rem",
+      fontWeight: "700",
+      marginBottom: "20px",
+      textShadow: "2px 2px 5px rgba(0,0,0,0.3)",
+    },
+    card: {
+      background: "rgba(255,255,255,0.15)",
+      backdropFilter: "blur(10px)",
+      borderRadius: "20px",
+      boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+      padding: "25px",
+      maxWidth: "650px",
+      margin: "20px auto",
+      color: "#fff",
+    },
+    button: {
+      background: "linear-gradient(90deg, #ff9966, #ff5e62)",
+      color: "white",
+      border: "none",
+      borderRadius: "10px",
+      padding: "10px 20px",
+      fontSize: "16px",
+      margin: "10px",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+    },
+    question: {
+      fontSize: "18px",
+      fontWeight: "500",
+      marginBottom: "10px",
+    },
+    label: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      margin: "10px 0",
+      fontSize: "18px",
+      cursor: "pointer",
+      background: "rgba(255,255,255,0.1)",
+      padding: "8px 12px",
+      borderRadius: "10px",
+      transition: "background 0.3s",
+    },
+    radio: {
+      width: "22px",
+      height: "22px",
+      accentColor: "#00ffcc",
+      cursor: "pointer",
+    },
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h1>📚 Mayank Super Quizzes</h1>
+    <div style={styles.body}>
+      <h1 style={styles.title}>🎯 Mayank Super Quiz App</h1>
 
       {/* SUBJECTS */}
       {!selectedSubject && (
-        <div>
-          <button
-            onClick={loadSubjects}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              backgroundColor: "#28a745",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginBottom: "20px",
-            }}
-          >
-            Load Subjects
+        <div style={styles.card}>
+          <button onClick={loadSubjects} style={styles.button}>
+            🚀 Load Subjects
           </button>
 
           {subjects.map((subject, i) => (
             <button
               key={i}
               onClick={() => loadQuizzes(subject)}
-              style={{
-                display: "block",
-                margin: "10px auto",
-                padding: "10px 20px",
-                fontSize: "16px",
-                cursor: "pointer",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-              }}
+              style={styles.button}
             >
               {subject.name}
             </button>
@@ -116,23 +153,13 @@ function QuizApi() {
 
       {/* QUIZZES */}
       {selectedSubject && quizzes.length > 0 && !selectedQuiz && (
-        <div>
-          <h2>Quizzes in {selectedSubject}</h2>
+        <div style={styles.card}>
+          <h2>📘 Quizzes in {selectedSubject}</h2>
           {quizzes.map((quiz, i) => (
             <button
               key={i}
               onClick={() => loadQuestions(quiz)}
-              style={{
-                display: "block",
-                margin: "10px auto",
-                padding: "10px 20px",
-                fontSize: "16px",
-                cursor: "pointer",
-                backgroundColor: "#17a2b8",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-              }}
+              style={styles.button}
             >
               {quiz.title}
             </button>
@@ -140,47 +167,36 @@ function QuizApi() {
         </div>
       )}
 
-      {/* QUESTIONS ONE BY ONE */}
+      {/* QUESTIONS */}
       {selectedQuiz && questions.length > 0 && !showResult && (
-        <div
-          style={{
-            maxWidth: "600px",
-            margin: "30px auto",
-            textAlign: "left",
-            backgroundColor: "#f8f9fa",
-            padding: "20px",
-            borderRadius: "10px",
-            boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-          }}
-        >
+        <div style={styles.card}>
           <h2>🧮 {selectedQuiz}</h2>
-          <h3>
+          <p style={styles.question}>
             {currentIndex + 1}. {questions[currentIndex].text}
-          </h3>
+          </p>
 
-          <div style={{ marginTop: "15px" }}>
-            <label>
+          <div>
+            <label style={styles.label}>
               <input
                 type="radio"
                 name={`q${currentIndex}`}
                 value="True"
                 checked={answers[currentIndex] === "True"}
                 onChange={(e) => handleAnswerChange(e.target.value)}
-                style={{ marginRight: "8px" }}
+                style={styles.radio}
               />
-              True
+              ✅ True
             </label>
-            <br />
-            <label>
+            <label style={styles.label}>
               <input
                 type="radio"
                 name={`q${currentIndex}`}
                 value="False"
                 checked={answers[currentIndex] === "False"}
                 onChange={(e) => handleAnswerChange(e.target.value)}
-                style={{ marginRight: "8px" }}
+                style={styles.radio}
               />
-              False
+              ❌ False
             </label>
           </div>
 
@@ -189,36 +205,19 @@ function QuizApi() {
               onClick={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
               disabled={currentIndex === 0}
               style={{
-                padding: "8px 15px",
-                marginRight: "10px",
-                cursor: "pointer",
+                ...styles.button,
+                opacity: currentIndex === 0 ? 0.5 : 1,
               }}
             >
               ⬅ Previous
             </button>
 
             {currentIndex < questions.length - 1 ? (
-              <button
-                onClick={handleNext} // ✅ Updated function
-                style={{
-                  padding: "8px 15px",
-                  cursor: "pointer",
-                }}
-              >
+              <button onClick={handleNext} style={styles.button}>
                 Next ➡
               </button>
             ) : (
-              <button
-                onClick={handleSubmit}
-                style={{
-                  padding: "8px 15px",
-                  background: "#28a745",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
+              <button onClick={handleSubmit} style={styles.button}>
                 ✅ Submit
               </button>
             )}
@@ -230,14 +229,55 @@ function QuizApi() {
         </div>
       )}
 
-      {/* RESULT SECTION */}
+      {/* RESULT */}
       {showResult && (
-        <div style={{ marginTop: "40px" }}>
+        <div style={styles.card}>
           <h2>🎉 Quiz Completed!</h2>
           <p>
             You got <b>{score}</b> out of <b>{questions.length}</b> correct.
           </p>
-          <p>Score: {((score / questions.length) * 100).toFixed(2)}%</p>
+          <p>
+            🏆 Score:{" "}
+            <b style={{ color: "#00ffcc" }}>
+              {((score / questions.length) * 100).toFixed(2)}%
+            </b>
+          </p>
+
+          {/* Detailed Review Section */}
+          <div style={{ textAlign: "left", marginTop: "25px" }}>
+            <h3>📋 Detailed Review:</h3>
+            {questions.map((q, i) => {
+              const isCorrect = answers[i] === q.answer;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    background: isCorrect
+                      ? "rgba(0,255,0,0.2)"
+                      : "rgba(255,0,0,0.2)",
+                    borderLeft: isCorrect
+                      ? "5px solid #00ff00"
+                      : "5px solid #ff4d4d",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    marginTop: "10px",
+                  }}
+                >
+                  <p>
+                    <b>Q{i + 1}:</b> {q.text}
+                  </p>
+                  <p>
+                    🟩 <b>Correct Answer:</b> {q.answer}
+                  </p>
+                  <p>
+                    🟥 <b>Your Answer:</b>{" "}
+                    {answers[i] ? answers[i] : "Not answered"}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
           <button
             onClick={() => {
               setSelectedSubject(null);
@@ -245,14 +285,7 @@ function QuizApi() {
               setQuestions([]);
               setShowResult(false);
             }}
-            style={{
-              padding: "10px 20px",
-              background: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            style={styles.button}
           >
             🔙 Back to Home
           </button>
