@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./QuizApi.css"; // ✅ External CSS file import
 
 function QuizApi() {
   const [subjects, setSubjects] = useState([]);
@@ -66,76 +67,14 @@ function QuizApi() {
     setCurrentIndex((prev) => Math.min(prev + 1, questions.length - 1));
   };
 
-  // 🔥 STYLING OBJECTS
-  const styles = {
-    body: {
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #667eea, #764ba2)",
-      color: "#fff",
-      textAlign: "center",
-      padding: "40px 10px",
-      fontFamily: "'Poppins', sans-serif",
-    },
-    title: {
-      fontSize: "2.5rem",
-      fontWeight: "700",
-      marginBottom: "20px",
-      textShadow: "2px 2px 5px rgba(0,0,0,0.3)",
-    },
-    card: {
-      background: "rgba(255,255,255,0.15)",
-      backdropFilter: "blur(10px)",
-      borderRadius: "20px",
-      boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-      padding: "25px",
-      maxWidth: "650px",
-      margin: "20px auto",
-      color: "#fff",
-    },
-    button: {
-      background: "linear-gradient(90deg, #ff9966, #ff5e62)",
-      color: "white",
-      border: "none",
-      borderRadius: "10px",
-      padding: "10px 20px",
-      fontSize: "16px",
-      margin: "10px",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-    },
-    question: {
-      fontSize: "18px",
-      fontWeight: "500",
-      marginBottom: "10px",
-    },
-    label: {
-      display: "flex",
-      alignItems: "center",
-      gap: "10px",
-      margin: "10px 0",
-      fontSize: "18px",
-      cursor: "pointer",
-      background: "rgba(255,255,255,0.1)",
-      padding: "8px 12px",
-      borderRadius: "10px",
-      transition: "background 0.3s",
-    },
-    radio: {
-      width: "22px",
-      height: "22px",
-      accentColor: "#00ffcc",
-      cursor: "pointer",
-    },
-  };
-
   return (
-    <div style={styles.body}>
-      <h1 style={styles.title}>🎯 Mayank Super Quiz App</h1>
+    <div className="quiz-body">
+      <h1 className="quiz-title">🎯 Mayank Super Quiz App</h1>
 
       {/* SUBJECTS */}
       {!selectedSubject && (
-        <div style={styles.card}>
-          <button onClick={loadSubjects} style={styles.button}>
+        <div className="quiz-card">
+          <button onClick={loadSubjects} className="quiz-button">
             🚀 Load Subjects
           </button>
 
@@ -143,7 +82,7 @@ function QuizApi() {
             <button
               key={i}
               onClick={() => loadQuizzes(subject)}
-              style={styles.button}
+              className="quiz-button"
             >
               {subject.name}
             </button>
@@ -153,13 +92,13 @@ function QuizApi() {
 
       {/* QUIZZES */}
       {selectedSubject && quizzes.length > 0 && !selectedQuiz && (
-        <div style={styles.card}>
+        <div className="quiz-card">
           <h2>📘 Quizzes in {selectedSubject}</h2>
           {quizzes.map((quiz, i) => (
             <button
               key={i}
               onClick={() => loadQuestions(quiz)}
-              style={styles.button}
+              className="quiz-button"
             >
               {quiz.title}
             </button>
@@ -169,32 +108,32 @@ function QuizApi() {
 
       {/* QUESTIONS */}
       {selectedQuiz && questions.length > 0 && !showResult && (
-        <div style={styles.card}>
+        <div className="quiz-card">
           <h2>🧮 {selectedQuiz}</h2>
-          <p style={styles.question}>
+          <p className="question-text">
             {currentIndex + 1}. {questions[currentIndex].text}
           </p>
 
           <div>
-            <label style={styles.label}>
+            <label className="option-label">
               <input
                 type="radio"
                 name={`q${currentIndex}`}
                 value="True"
                 checked={answers[currentIndex] === "True"}
                 onChange={(e) => handleAnswerChange(e.target.value)}
-                style={styles.radio}
+                className="radio-btn"
               />
               ✅ True
             </label>
-            <label style={styles.label}>
+            <label className="option-label">
               <input
                 type="radio"
                 name={`q${currentIndex}`}
                 value="False"
                 checked={answers[currentIndex] === "False"}
                 onChange={(e) => handleAnswerChange(e.target.value)}
-                style={styles.radio}
+                className="radio-btn"
               />
               ❌ False
             </label>
@@ -204,20 +143,17 @@ function QuizApi() {
             <button
               onClick={() => setCurrentIndex((prev) => Math.max(prev - 1, 0))}
               disabled={currentIndex === 0}
-              style={{
-                ...styles.button,
-                opacity: currentIndex === 0 ? 0.5 : 1,
-              }}
+              className={`quiz-button ${currentIndex === 0 ? "disabled" : ""}`}
             >
               ⬅ Previous
             </button>
 
             {currentIndex < questions.length - 1 ? (
-              <button onClick={handleNext} style={styles.button}>
+              <button onClick={handleNext} className="quiz-button">
                 Next ➡
               </button>
             ) : (
-              <button onClick={handleSubmit} style={styles.button}>
+              <button onClick={handleSubmit} className="quiz-button">
                 ✅ Submit
               </button>
             )}
@@ -231,37 +167,26 @@ function QuizApi() {
 
       {/* RESULT */}
       {showResult && (
-        <div style={styles.card}>
+        <div className="quiz-card">
           <h2>🎉 Quiz Completed!</h2>
           <p>
             You got <b>{score}</b> out of <b>{questions.length}</b> correct.
           </p>
           <p>
             🏆 Score:{" "}
-            <b style={{ color: "#00ffcc" }}>
+            <b className="highlight">
               {((score / questions.length) * 100).toFixed(2)}%
             </b>
           </p>
 
-          {/* Detailed Review Section */}
-          <div style={{ textAlign: "left", marginTop: "25px" }}>
+          <div className="result-section">
             <h3>📋 Detailed Review:</h3>
             {questions.map((q, i) => {
               const isCorrect = answers[i] === q.answer;
               return (
                 <div
                   key={i}
-                  style={{
-                    background: isCorrect
-                      ? "rgba(0,255,0,0.2)"
-                      : "rgba(255,0,0,0.2)",
-                    borderLeft: isCorrect
-                      ? "5px solid #00ff00"
-                      : "5px solid #ff4d4d",
-                    borderRadius: "10px",
-                    padding: "10px",
-                    marginTop: "10px",
-                  }}
+                  className={`result-item ${isCorrect ? "correct" : "wrong"}`}
                 >
                   <p>
                     <b>Q{i + 1}:</b> {q.text}
@@ -285,7 +210,7 @@ function QuizApi() {
               setQuestions([]);
               setShowResult(false);
             }}
-            style={styles.button}
+            className="quiz-button"
           >
             🔙 Back to Home
           </button>
