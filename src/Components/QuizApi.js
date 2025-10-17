@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import "./QuizApi.css"; // ✅ External CSS file import
+import "./QuizApi.css";
 
 function QuizApi() {
   const [subjects, setSubjects] = useState([]);
@@ -74,9 +74,11 @@ function QuizApi() {
       {/* SUBJECTS */}
       {!selectedSubject && (
         <div className="quiz-card">
-          <button onClick={loadSubjects} className="quiz-button">
-            🚀 Load Subjects
-          </button>
+          {subjects.length === 0 && (
+            <button onClick={loadSubjects} className="quiz-button">
+              🚀 Load Subjects
+            </button>
+          )}
 
           {subjects.map((subject, i) => (
             <button
@@ -94,6 +96,7 @@ function QuizApi() {
       {selectedSubject && quizzes.length > 0 && !selectedQuiz && (
         <div className="quiz-card">
           <h2>📘 Quizzes in {selectedSubject}</h2>
+
           {quizzes.map((quiz, i) => (
             <button
               key={i}
@@ -103,6 +106,17 @@ function QuizApi() {
               {quiz.title}
             </button>
           ))}
+
+          {/* Back to Subjects */}
+          <button
+            onClick={() => {
+              setSelectedSubject(null);
+              setQuizzes([]);
+            }}
+            className="quiz-button"
+          >
+            🔙 Back to Subjects
+          </button>
         </div>
       )}
 
@@ -157,6 +171,18 @@ function QuizApi() {
                 ✅ Submit
               </button>
             )}
+
+            {/* Back to Quizzes */}
+            <button
+              onClick={() => {
+                setSelectedQuiz(null);
+                setQuestions([]);
+              }}
+              className="quiz-button"
+              style={{ marginLeft: "10px" }}
+            >
+              🔙 Back to Quizzes
+            </button>
           </div>
 
           <p style={{ marginTop: "15px", fontStyle: "italic" }}>
@@ -205,14 +231,26 @@ function QuizApi() {
 
           <button
             onClick={() => {
-              setSelectedSubject(null);
               setSelectedQuiz(null);
               setQuestions([]);
               setShowResult(false);
             }}
             className="quiz-button"
           >
-            🔙 Back to Home
+            🔙 Back to Quizzes
+          </button>
+
+          <button
+            onClick={() => {
+              setSelectedSubject(null);
+              setSelectedQuiz(null);
+              setQuestions([]);
+              setShowResult(false);
+            }}
+            className="quiz-button"
+            style={{ marginLeft: "10px" }}
+          >
+            🔙 Back to Subjects
           </button>
         </div>
       )}
